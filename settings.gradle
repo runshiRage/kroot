@@ -1,0 +1,5 @@
+rootProject.name = 'kroot'
+include 'kroot-web'
+include 'kroot-model'
+include 'kroot-service'
+

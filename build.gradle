@@ -1,0 +1,59 @@
+/**
+ * 这里的 allprojects 和 subprojects
+ * 区别在于 allprojects是作用也相同根（kroot）在内的所有模块, 而 subprijects 只作用域子模块
+ * 比如当我在allprijects中有一个任务（task）是输出helloworld, subprojects 也有， 同时在具体的子模块中（kroot-web）也有的话
+ * 输出的顺序就是  allprojects --> subprojects --> kroot-web
+ */
+// 所有模块/项目的通用配置
+allprojects {
+
+    group 'com.kroot'
+    version '1.0-SNAPSHOT'
+    apply plugin: 'java'
+
+}
+// 子模块/项目的统一配置
+subprojects {
+    //插件使用  java 表示java项目的编译 打包等一系列动作的插件
+    apply plugin: 'java'
+    // 指定JDK版本
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    // 指定编码格式
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+    //依赖仓库地址
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    }
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+
+        // implementation  表示依赖不对父类开放   比如  A 依赖 B , B 依赖 C
+        // 当B使用implementation 编写C的依赖时候， A是看不到B依赖C这个关系的
+        // 官方给出建议是 能用implementation就用，如果报错在改用api(版本2.x中的compile)
+        implementation 'org.springframework.boot:spring-boot-dependencies:2.0.5.RELEASE'
+        implementation 'org.springframework.boot:spring-boot-starter-web:2.2.5.RELEASE'
+
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+        compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.5.RELEASE'
+    }
+}
+
+
+////buildscript中的声明是gradle脚本自身需要使用的资源。可以声明的资源包括依赖项、第三方插件、maven仓库地址等。
+////而在build.gradle文件中直接声明的依赖项、仓库地址等信息是项目自身需要的资源。  比如 repositories
+//buildscript {
+//    ext {
+//        springBootVersion = '2.1.2.RELEASE'
+//    }
+//    repositories {
+//        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+//    }
+//    dependencies {
+//        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+//    }
+//}
